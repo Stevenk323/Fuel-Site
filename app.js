@@ -1,13 +1,24 @@
+//npm install
+
 //create express app
 const express = require('express');
 const app = express();
+const mongoose = require('mongoose');
+const Quote = require('./models/quotes');
+
+//Connect to mongoDB
+const dbURI = 'mongodb+srv://steven:test123@msrfuel.umlpr.mongodb.net/msr-fuel?retryWrites=true&w=majority';
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true})
+    .then((result) => app.listen(3000))
+    .catch((err) => console.log(err));
 
 //allow the use of ejs
 app.set('view engine', 'ejs');
 
 //images middlware/staticfiles
 app.use(express.static('public'));
-
+    //accepting form data
+app.use(express.urlencoded({ extended: true}));
 
 //get links
     //index
@@ -34,6 +45,19 @@ app.get('/profile', (req,res) => {
 app.get('/quote_history', (req,res) => {
     res.render('quote_history', { page: 'Quote History' });
 });
+
+app.post('/add-quote', (req, res) => {
+    const quote = new Quote(req.body);
+
+    quote.save()
+        .then (() => {
+            res.redirect('/quote_history');
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+});
+
 /*
     //404
 app.use((req,res) => {
@@ -41,6 +65,3 @@ app.use((req,res) => {
 });
 */
 
-
-//listen for requests at localhost:3000
-app.listen(3000);
