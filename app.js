@@ -7,10 +7,12 @@ const mongoose = require('mongoose');
 const Quote = require('./models/quotes');
 
 //Connect to mongoDB
+
 const dbURI = 'mongodb+srv://steven:test123@msrfuel.umlpr.mongodb.net/msr-fuel?retryWrites=true&w=majority';
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true})
     .then((result) => app.listen(3000))
     .catch((err) => console.log(err));
+
 
 //allow the use of ejs
 app.set('view engine', 'ejs');
@@ -37,6 +39,10 @@ app.get('/login', (req,res) => {
 app.get('/register', (req,res) => {
     res.render('register', { page: 'Sign Up' });
 });
+    //register
+app.get('/forgotpassword', (req,res) => {
+    res.render('forgotpassword', { page: 'Forgot Password' });
+});
     //profile
 app.get('/profile', (req,res) => {
     res.render('profile', { page: 'Profile' });
@@ -47,6 +53,9 @@ app.get('/quote_history', (req,res) => {
 });
 
 app.post('/add-quote', (req, res) => {
+
+    
+    //save to mongoDB 
     const quote = new Quote(req.body);
 
     quote.save()
@@ -56,6 +65,8 @@ app.post('/add-quote', (req, res) => {
         .catch((err) => {
             console.log(err);
         })
+    
+
 });
 
 /*
@@ -64,4 +75,3 @@ app.use((req,res) => {
     res.render('404', {page: '404 Page Not Found'});
 });
 */
-
